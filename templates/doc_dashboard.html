@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Doctor Dashboard</title>
+
+  
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet" />
+  <style>
+    
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    :root {
+      --bg: #f5f7fa;
+      --text: #222;
+      --glass-bg: rgba(255, 255, 255, 0.6);
+      --glass-border: rgba(255, 255, 255, 0.4);
+      --btn-bg: rgba(0, 0, 0, 0.05);
+      --btn-text: #222;
+    }
+    body.dark-mode {
+      --bg: #121212;
+      --text: #f5f5f5;
+      --glass-bg: rgba(18, 18, 18, 0.6);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --btn-bg: rgba(255, 255, 255, 0.05);
+      --btn-text: #f5f5f5;
+    }
+
+    /* Background image */
+    .background-img {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -2;
+      filter: blur(5px) brightness(0.8);
+    }
+    body.dark-mode .background-img {
+      filter: blur(5px) brightness(0.4);
+    }
+
+    /* Glass container */
+    .container {
+      max-width: 1000px;
+      margin: 100px auto 50px;
+      padding: 30px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+
+    /* Dashboard section */
+    .dashboard-section {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 15px;
+      padding: 20px;
+      margin-top: 25px;
+      backdrop-filter: blur(8px);
+    }
+
+    .dashboard-section h3 {
+      margin: 0 0 10px;
+    }
+
+    .dashboard-section button {
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+    }
+    .dashboard-section button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    }
+
+    /* Dark mode toggle */
+    .toggle-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      padding: 8px 14px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      backdrop-filter: blur(8px);
+    }
+
+    /* Logout button */
+    .logout-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 8px 14px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 50px;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--btn-text);
+      font-size: 0.9rem;
+      backdrop-filter: blur(8px);
+    }
+
+    /* Flash popup */
+    .popup-alert {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      padding: 10px 15px;
+      border-radius: 10px;
+      backdrop-filter: blur(8px);
+      z-index: 99;
+    }
+  </style>
+</head>
+<body>
+
+<img src="{{ url_for('static', filename='images/slide1.jpg') }}" class="background-img" alt="Background">
+
+<!-- 🌙 Dark Mode Toggle Button -->
+<button onclick="toggleDarkMode()" class="toggle-btn">🌙</button>
+
+{% if session['user_id'] %}
+  {% if request.endpoint == 'home' %}
+    <a href="{{ url_for('logout') }}" class="logout-btn logout-home">Logout</a>
+  {% else %}
+    <a href="{{ url_for('logout') }}" class="logout-btn clinic-logout">Logout</a>
+  {% endif %}
+{% endif %}
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="popup-alert" id="popupAlert">
+      {% for message in messages %}
+        {{ message }}
+      {% endfor %}
+    </div>
+    <script>
+      setTimeout(() => {
+        const alert = document.getElementById('popupAlert');
+        if (alert) alert.style.display = 'none';
+      }, 3000);
+    </script>
+  {% endif %}
+{% endwith %}
+
+<div class="container">
+  <h2>Welcome, Dr. {{ doctor.email or "Doctor" }}!</h2>
+
+  
+  <div class="dashboard-section">
+    <h3>Appointments</h3>
+    <p>Click below to view and manage all your appointments.</p>
+    <a href="/appointments">
+      <button>View All Appointments</button>
+    </a>
+  </div>
+
+  
+  <div class="dashboard-section">
+    <h3>Calendar View</h3>
+    <div id="calendar"></div>
+  </div>
+</div>
+
+<!-- FullCalendar JS -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      height: 'auto',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek'
+      },
+      timeZone: 'local',
+      events: {{ events | tojson | safe }}
+    });
+    calendar.render();
+  });
+
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+  }
+
+  window.onload = function () {
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.body.classList.add('dark-mode');
+    }
+  };
+</script>
+
+</body>
+</html>

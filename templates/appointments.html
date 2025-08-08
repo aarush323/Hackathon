@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>All Appointments</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <!-- 🌙 Dark Mode Toggle Button -->
+  <button onclick="toggleDarkMode()" class="toggle-btn">🌙 Toggle Dark Mode</button>
+
+  <img src="{{ url_for('static', filename='images/slide1.jpg') }}" class="background-img" alt="Background">
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="popup-alert" id="popupAlert">
+        {% for message in messages %}
+          {{ message }}
+        {% endfor %}
+      </div>
+      <script>
+        setTimeout(() => {
+          const alert = document.getElementById('popupAlert');
+          if (alert) alert.style.display = 'none';
+        }, 3000);
+      </script>
+    {% endif %}
+  {% endwith %}
+
+  <div class="illustration-bg"></div>
+
+  <div class="container fade-in" style="margin-top: 80px;">
+
+    <!-- Top Bar -->
+    <div class="logout-bar">
+      <form action="{{ url_for('logout') }}" method="get">
+        <button type="submit" class="logout-btn">Logout</button>
+      </form>
+    </div>
+
+    <!-- Doctor Info -->
+    <div class="doctor-info">
+      <img src="https://cdn-icons-png.flaticon.com/512/3870/3870997.png" alt="Doctor Avatar" class="doctor-avatar">
+      <h2><span class="stethoscope-icon">🩺</span> Dr. {{ doctor.email }}</h2>
+      <p class="subtitle">Upcoming Appointments</p>
+    </div>
+
+    <!-- Appointments Table -->
+    {% if bookings %}
+      <table class="appointments-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Patient Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for booking in bookings %}
+          <tr>
+            <td>{{ booking.date }}</td>
+            <td>{{ booking.time }}:00</td>
+            <td>{{ booking.patient_email }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>No appointments found.</p>
+    {% endif %}
+
+    <!-- Back Button -->
+    <a href="/doc_dashboard"><button class="back-btn">Back to Dashboard</button></a>
+  </div>
+
+  <!-- 🌙 Dark Mode Script -->
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    }
+
+    window.onload = function () {
+      if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+      }
+    };
+  </script>
+
+</body>
+</html>

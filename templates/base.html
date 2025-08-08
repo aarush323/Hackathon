@@ -1,0 +1,59 @@
+{# base.html #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}DocConnect{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  {% block extra_head %}{% endblock %}
+ 
+</head>
+<body>
+  <button onclick="toggleDarkMode()" class="toggle-btn">
+    🌙 Toggle Dark Mode
+  </button>
+
+  {% if show_navbar %}
+  <div class="navbar">
+    <h2>DocConnect</h2>
+    <div class="nav-links">
+      <a href="{{ url_for('login') }}">Login</a>
+      <a href="{{ url_for('register') }}">Register</a>
+    </div>
+  </div>
+  {% endif %}
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="popup-alert" id="popupAlert">
+        {% for message in messages %}
+          {{ message }}
+        {% endfor %}
+      </div>
+      <script>
+        setTimeout(() => {
+          const alert = document.getElementById('popupAlert');
+          if (alert) alert.style.display = 'none';
+        }, 3000);
+      </script>
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    }
+
+    window.onload = function () {
+      if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+      }
+    };
+  </script>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

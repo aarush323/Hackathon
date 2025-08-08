@@ -1,0 +1,24 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+
+# Environment
+.env
+
+# IDE/editor settings
+.vscode/
+*.code-workspace
+
+# Temp files from code runners
+tempcoderunner-*/
+
+# Flask instance folder
+instance/
+
+# SQLite database if needed (optional)
+*.sqlite3
+*.db
+
+# OS-specific files
+.DS_Store
+Thumbs.db
