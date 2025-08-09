@@ -10,7 +10,7 @@
       top: 20px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 9999;
+      z-index:100;
       background-color: transparent;
       border: 2px solid #007bff;
       color: #007bff;
@@ -54,7 +54,7 @@
 
       <div id="hospital-fields" style="display: none;">
         <label>Doctor Code:</label>
-        <input type="text" name="doc_code" placeholder="Only for Hospital officials (doc123)"
+        <input type="text" name="doc_code" placeholder="Only for Hospital officials"
               value="{{ request.form.get('doc_code','') }}" /><br><br>
 
         <label>Select Clinic:</label>

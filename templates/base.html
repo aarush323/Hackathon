@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>{% block title %}DocConnect{% endblock %}</title>
+  <title>{% block title %}ECOIConnect{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   {% block extra_head %}{% endblock %}
  
@@ -15,7 +15,7 @@
 
   {% if show_navbar %}
   <div class="navbar">
-    <h2>DocConnect</h2>
+    <h2>ECOIConnect</h2>
     <div class="nav-links">
       <a href="{{ url_for('login') }}">Login</a>
       <a href="{{ url_for('register') }}">Register</a>
