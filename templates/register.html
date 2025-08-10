@@ -1,109 +1,388 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Register</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ECOIConnect | Register</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
-    /* Dark Mode Toggle Button */
-    .toggle-btn {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index:100;
-      background-color: transparent;
-      border: 2px solid #007bff;
-      color: #007bff;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: 0.3s;
+    :root {
+      --bg: #0b0f14;
+      --surface: rgba(255,255,255,0.08);
+      --text: #e8eef6;
+      --muted: #a9b7c6;
+      --primary: #7cf7ff;
+      --primary-2: #b388ff;
+      --accent: #ff7ab6;
+      --success: #7affb3;
+      --warning: #ffd46b;
+      --danger: #ff6b6b;
+      --glass: rgba(255,255,255,0.12);
+      --glass-stroke: rgba(255,255,255,0.25);
+      --shadow: 0 20px 60px rgba(0,0,0,0.45);
+      --glow: 0 0 32px rgba(124,247,255,0.45), 0 0 12px rgba(179,136,255,0.35);
     }
-
-    .toggle-btn:hover {
-      background-color: #007bff;
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans";
+      margin: 0; min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .carousel-bg { position: fixed; inset: 0; z-index: -3; overflow: hidden; }
+    .carousel-bg img {
+      position: absolute; inset: 0; width: 100vw; height: 100vh;
+      object-fit: cover;
+      filter: saturate(1.15) contrast(1.05) brightness(0.85);
+      animation: kenburns 18s ease-in-out infinite;
+      transform-origin: center;
+    }
+    @keyframes kenburns {
+      0% { transform: scale(1) translate(0,0); }
+      50% { transform: scale(1.09) translate(1.5%, -1%); }
+      100% { transform: scale(1) translate(0,0); }
+    }
+    .hero-overlay {
+      position: fixed; inset: 0; z-index: -2; pointer-events: none;
+      background:
+        radial-gradient(1000px 500px at 80% 10%, rgba(179,136,255,0.25), transparent 60%),
+        radial-gradient(800px 400px at 10% 85%, rgba(124,247,255,0.22), transparent 60%),
+        linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.66));
+    }
+    .hero-vignette {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      box-shadow: inset 0 0 140px rgba(0,0,0,0.65);
+    }
+    .mode-toggle {
+      position: absolute; top: 18px; right: 18px; z-index: 3;
+      display: inline-flex; gap: 8px; padding: 10px 14px;
+      border-radius: 999px; background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.15); color: #e8eef6; cursor: pointer;
+      backdrop-filter: blur(8px);
+      font-size: 1.06rem;
+    }
+    .login-hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 12px;
+    }
+    .badges {
+      display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 18px;
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--glass); border: 1px solid var(--glass-stroke);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      font-size: 0.99rem; color: #e9f7ff;
+    }
+    .badge svg { width: 16px; height: 16px; }
+    .login-headline {
+      font-family: "Space Grotesk", Inter, system-ui, sans-serif;
+      font-weight: 800; letter-spacing: -0.02em;
+      font-size: clamp(2.3rem, 5vw, 4.1rem);
+      line-height: 1.04;
+      margin: 0 0 14px 0;
+      background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary-2), var(--success));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent !important;
+      filter: drop-shadow(0 6px 24px rgba(124,247,255,0.25));
+      text-align: center;
+    }
+    .login-tagline {
+      font-size: clamp(1.05rem, 1.3vw, 1.3rem);
+      max-width: 700px;
+      margin: 0 auto 1.6em;
+      color: var(--muted);
+      text-align: center;
+      font-family: Inter,sans-serif;
+    }
+    .hero-buttons {
+      margin: 20px 0;
+      display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+    }
+    .btn-neon {
+      --c1: var(--primary); --c2: var(--primary-2);
+      position: relative;
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 28px;
+      background: radial-gradient(120% 180% at 20% 30%, rgba(124,247,255,0.22), rgba(179,136,255,0.18));
       color: white;
+      text-decoration: none;
+      border-radius: 14px;
+      font-weight: 800; letter-spacing: 0.4px;
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: var(--glow), inset 0 0 0 1px rgba(255,255,255,0.06);
+      backdrop-filter: blur(8px);
+      transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+      overflow: hidden;
+      font-size: 1rem;
+      cursor: pointer;
     }
-
-    /* Push form down below toggle */
-    .register-container {
-      margin-top: 80px; /* adjust as needed */
+    .btn-neon .shine {
+      position: absolute; inset: -40% -20%;
+      background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.25), transparent 30%);
+      transform: translateX(-120%);
+      animation: sweep 2.8s linear infinite;
     }
+    @keyframes sweep { to { transform: translateX(120%); } }
+    .btn-neon:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 0 46px rgba(124,247,255,0.5), 0 0 22px rgba(179,136,255,0.35);
+    }
+    .btn-ghost {
+      background: rgba(255,255,255,0.06);
+      color: #e8eef6;
+      border: 1px dashed rgba(255,255,255,0.26);
+      box-shadow: 0 8px 26px rgba(0,0,0,0.23);
+    }
+    .btn-neon:active::after {
+      content: "";
+      position: absolute;
+      left: var(--x); top: var(--y);
+      width: 6px; height: 6px; transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(255,255,255,0.7), transparent 60%);
+      border-radius: 50%;
+      animation: ripple 600ms ease-out;
+      pointer-events: none;
+    }
+    @keyframes ripple {
+      from { opacity: 0.9; transform: translate(-50%, -50%) scale(1); }
+      to { opacity: 0; transform: translate(-50%, -50%) scale(30); }
+    }
+    .glass-form-box {
+      margin: 50px 0 0 0;
+      padding: 32px 30px 30px 30px;
+      width: min(92vw, 400px);
+      border-radius: 16px;
+      background: rgba(10,14,22,0.65);
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 18px 44px rgba(0,0,0,0.47), inset 0 0 0 1px rgba(255,255,255,0.03);
+      backdrop-filter: blur(14px);
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+    .glass-form-box::before {
+      content: "";
+      position: absolute; inset: -1px;
+      border-radius: 16px;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(124,247,255,0.5), rgba(179,136,255,0.5), rgba(255,122,182,0.5));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude;
+      opacity: 0.29; pointer-events: none;
+    }
+    .glass-form-box h2 {
+      margin: 4px 0 16px 0; font-size: 1.44rem;
+      font-family: "Space Grotesk", Inter, sans-serif;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary-2), var(--success));
+      -webkit-background-clip: text;
+      color: transparent; background-clip: text;
+    }
+    .glass-form-box form { margin-bottom: 0; }
+    .glass-form-box input[type="text"],
+    .glass-form-box input[type="email"],
+    .glass-form-box input[type="password"],
+    .glass-form-box select,
+    .glass-form-box option {
+      width: 100%;
+      padding: 12px 14px;
+      margin: 8px 0 14px 0;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.17);
+      background: rgba(255,255,255,0.12);
+      color: #eaf6ff !important;
+      outline: none;
+      font-size: 1rem;
+      backdrop-filter: blur(6px);
+      transition: box-shadow 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .glass-form-box input:focus,
+    .glass-form-box select:focus {
+      border-color: rgba(124,247,255,0.6);
+      box-shadow: 0 0 0 4px rgba(124,247,255,0.17);
+      background: rgba(255,255,255,0.18);
+    }
+    .glass-form-box button[type="submit"] {
+      margin-top: 8px;
+      width: 100%;
+      padding: 13px 0;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.11rem;
+      background: radial-gradient(120% 180% at 20% 30%, rgba(124,247,255,0.28), rgba(179,136,255,0.18));
+      color: #fff;
+      border: 1.2px solid rgba(255,255,255,0.15);
+      box-shadow: 0 0 22px rgba(124,247,255,0.12);
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s, background 0.19s;
+      backdrop-filter: blur(6px);
+      outline: none;
+    }
+    .glass-form-box button[type="submit"]:hover {
+      box-shadow: 0 0 32px rgba(124,247,255,0.22), 0 0 20px rgba(179,136,255,0.22);
+      transform: scale(1.018);
+    }
+    .glass-form-box p {
+      margin-top: 18px;
+      color: #cbeffd;
+      font-size: .98rem;
+      opacity: 0.85;
+    }
+    .glass-form-box a { color: #b388ff; text-decoration: underline dotted; }
+    .glass-form-box a:hover { color: #7cf7ff; text-decoration: underline; }
+    body.dark-mode .carousel-bg img { filter: brightness(0.63) saturate(1.12); }
+    body.dark-mode .glass-form-box { background: rgba(12,16,24,0.74);}
+    body.dark-mode .glass-form-box input, 
+    body.dark-mode .glass-form-box button, 
+    body.dark-mode .glass-form-box select, 
+    body.dark-mode .glass-form-box option { color: #f7fbff !important; }
   </style>
 </head>
 <body>
-  <img src="{{ url_for('static', filename='images/slide1.jpg') }}" class="background-img" alt="Background">
-  <!-- ✅ Dark Mode Toggle Button -->
-  <button onclick="toggleDarkMode()" class="toggle-btn">
-    🌙 Toggle Dark Mode
-  </button>
-
-  <div class="container" style="margin-top: 80px;">
-    <h2>Register</h2>
-    <form method="POST">
-      <input type="text" name="username" placeholder="Username" required /><br>
-      <input type="email" name="actual_email" placeholder="Your Real Email" required /><br>
-      <input type="password" name="password" placeholder="Password" required /><br>
-
-      <label>Role:</label>
-      <select name="role" id="role" required onchange="toggleHospitalFields()">
-        <option value="patient" {% if request.form.get('role') == 'patient' %}selected{% endif %}>Patients</option>
-        <option value="doctor" {% if request.form.get('role') == 'doctor' %}selected{% endif %}>Hospital Officials</option>
-      </select><br><br>
-
-      <div id="hospital-fields" style="display: none;">
-        <label>Doctor Code:</label>
-        <input type="text" name="doc_code" placeholder="Only for Hospital officials"
-              value="{{ request.form.get('doc_code','') }}" /><br><br>
-
-        <label>Select Clinic:</label>
-        <select name="clinic_id">
-          <option value="">Select a clinic</option>
-          {% for clinic in clinics %}
-            <option value="{{ clinic.id }}" {% if request.form.get('clinic_id') == clinic.id|string %}selected{% endif %}>
-              {{ clinic.name }} ({{ clinic.location }})
-            </option>
-          {% endfor %}
-        </select><br><br>
-
-        <label>Select Speciality:</label>
-        <select name="speciality">
-          <option value="">Select a speciality</option>
-          <option value="oncologist" {% if request.form.get('speciality') == 'oncologist' %}selected{% endif %}>Oncologist</option>
-          <option value="dermatologist" {% if request.form.get('speciality') == 'dermatologist' %}selected{% endif %}>Dermatologist</option>
-          <option value="neurologist" {% if request.form.get('speciality') == 'neurologist' %}selected{% endif %}>Neurologist</option>
-          <option value="pediatrician" {% if request.form.get('speciality') == 'pediatrician' %}selected{% endif %}>Pediatrician</option>
-          <option value="orthodontist" {% if request.form.get('speciality') == 'orthodontist' %}selected{% endif %}>Orthodontist</option>
-        </select><br><br>
-      </div>
-
-      <button type="submit">Register</button>
-    </form>
-    <p style="margin-top: 6px;"><a href="/login">Already have an account? Login</a></p>
+  <div class="carousel-bg">
+    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1500&q=80" alt="Background Clinic" />
   </div>
-
+  <div class="hero-overlay"></div>
+  <div class="hero-vignette"></div>
+  <div class="mode-toggle" id="modeToggle">☀️/🌙 Theme</div>
+  <div class="login-hero">
+    <div class="badges">
+      <span class="badge">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 12l4 4 12-12" stroke="currentColor" stroke-width="2"/></svg>
+        Instant booking
+      </span>
+      <span class="badge">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M8 12h8" stroke="currentColor" stroke-width="2"/></svg>
+        Queue optimization
+      </span>
+      <span class="badge">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2v20M2 12h20" stroke="currentColor" stroke-width="2"/></svg>
+        Smart suggestions
+      </span>
+    </div>
+    <div class="login-headline">CREATE YOUR ACCOUNT</div>
+    <div class="login-tagline">
+      Join ECOIConnect and start smarter managing appointments today!
+    </div>
+    <div class="hero-buttons">
+      <a class="btn-neon btn-ghost" href="{{ url_for('login') }}" id="loginBtn">
+        <span class="shine"></span> Back to Login
+      </a>
+    </div>
+    <div class="glass-form-box">
+      <h2>Register</h2>
+      <form method="POST" action="{{ url_for('register') }}" autocomplete="off" novalidate>
+        <input type="text" name="username" placeholder="Username" required value="{{ request.form.get('username','') }}" /><br>
+        <input type="email" name="actual_email" placeholder="Your Real Email" required value="{{ request.form.get('actual_email','') }}" /><br>
+        <input type="password" name="password" placeholder="Password" required /><br>
+        <label>Role:</label>
+        <select name="role" id="role" required>
+          <option value="patient" {% if request.form.get('role') == 'patient' %}selected{% endif %}>Patient</option>
+          <option value="doctor" {% if request.form.get('role') == 'doctor' %}selected{% endif %}>Hospital Official</option>
+        </select><br><br>
+        <div id="hospital-fields" style="display: none;">
+          <label>Doctor Code:</label>
+          <input type="text" name="doc_code" placeholder="Only for Hospital officials"
+                  value="{{ request.form.get('doc_code','') }}" /><br><br>
+          <label>Select Clinic:</label>
+          <select name="clinic_id">
+            <option value="">Select a clinic</option>
+            {% for clinic in clinics %}
+              <option value="{{ clinic.id }}" {% if request.form.get('clinic_id') == clinic.id|string %}selected{% endif %}>
+                {{ clinic.name }} ({{ clinic.location }})
+              </option>
+            {% endfor %}
+          </select><br><br>
+          <label>Select Speciality:</label>
+          <select name="speciality">
+            <option value="">Select a speciality</option>
+            <option value="oncologist" {% if request.form.get('speciality') == 'oncologist' %}selected{% endif %}>Oncologist</option>
+            <option value="dermatologist" {% if request.form.get('speciality') == 'dermatologist' %}selected{% endif %}>Dermatologist</option>
+            <option value="neurologist" {% if request.form.get('speciality') == 'neurologist' %}selected{% endif %}>Neurologist</option>
+            <option value="pediatrician" {% if request.form.get('speciality') == 'pediatrician' %}selected{% endif %}>Pediatrician</option>
+            <option value="orthodontist" {% if request.form.get('speciality') == 'orthodontist' %}selected{% endif %}>Orthodontist</option>
+          </select><br><br>
+        </div>
+        <button type="submit">Register</button>
+      </form>
+      <p style="margin-top: 6px;">
+        Already have an account? <a href="{{ url_for('login') }}">Login here</a>
+      </p>
+    </div>
+  </div>
   <script>
-    function toggleDarkMode() {
-      document.body.classList.toggle('dark-mode');
-      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-    }
-
-    window.onload = function () {
-      if (localStorage.getItem('darkMode') === 'true') {
-        document.body.classList.add('dark-mode');
-      }
-    };
-
+    // --- Helper: toggles hospital fields ---
     function toggleHospitalFields() {
       const role = document.getElementById("role").value;
       const hospitalFields = document.getElementById("hospital-fields");
       hospitalFields.style.display = (role === "doctor") ? "block" : "none";
     }
+    // --- Dark mode persistence and ripple ---
+    document.addEventListener("DOMContentLoaded", function() {
+      // Toggle hospital fields at start
+      toggleHospitalFields();
+      document.getElementById('role').addEventListener('change', toggleHospitalFields);
 
-    document.addEventListener("DOMContentLoaded", toggleHospitalFields);
+      // Dark mode handling
+      if (localStorage.getItem('darkMode') === 'true')
+        document.body.classList.add('dark-mode');
+      document.querySelector('.mode-toggle').addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+      });
+
+      // Neon ripple effect on hero button
+      document.querySelectorAll('.btn-neon').forEach(b=>{
+        b.addEventListener('pointerdown', e=>{
+          const rect = b.getBoundingClientRect();
+          b.style.setProperty('--x', (e.clientX - rect.left) + 'px');
+          b.style.setProperty('--y', (e.clientY - rect.top) + 'px');
+        });
+      });
+
+      // Confetti burst + delayed navigation for hero button back to login
+      const loginBtn = document.getElementById('loginBtn');
+      if(loginBtn){
+        loginBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          confettiBurst(e.clientX, e.clientY);
+          setTimeout(() => { window.location.href = this.href; }, 600);
+        });
+      }
+    });
+
+    // --- Confetti burst helper ---
+    function confettiBurst(x, y) {
+      const colors = ['#7cf7ff','#b388ff','#ff7ab6','#ffd46b','#7affb3'];
+      for (let i=0;i<24;i++) {
+        const d = document.createElement('div');
+        d.style.position='fixed';
+        d.style.left = x+'px'; d.style.top = y+'px';
+        d.style.width='6px'; d.style.height='10px';
+        d.style.background=colors[Math.floor(Math.random()*colors.length)];
+        d.style.borderRadius='2px';
+        d.style.transform=`translate(-50%,-50%) rotate(${Math.random()*360}deg)`;
+        d.style.zIndex=9999;
+        document.body.appendChild(d);
+        const dx = (Math.random()-0.5)*300, dy = (Math.random()-0.9)*420;
+        const rot = (Math.random()-0.5)*720;
+        d.animate([
+          { transform: d.style.transform, opacity: 1 },
+          { transform: `translate(${dx}px, ${dy}px) rotate(${rot}deg)`, opacity: 0 }
+        ], { duration: 900 + Math.random()*600, easing: 'cubic-bezier(.2,.8,.2,1)' })
+        .onfinish = ()=> d.remove();
+      }
+    }
   </script>
-
 </body>
-
 </html>

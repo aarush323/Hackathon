@@ -5,214 +5,504 @@
 
 {% block content %}
 <style>
+/* ====== OVERKILL THEME: CINEMATIC + NEON GLASS ====== */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;600;800&display=swap');
 
+:root {
+  --bg: #0b0f14;
+  --surface: rgba(255,255,255,0.08);
+  --text: #e8eef6;
+  --muted: #a9b7c6;
+  --primary: #7cf7ff;
+  --primary-2: #b388ff;
+  --accent: #ff7ab6;
+  --success: #7affb3;
+  --warning: #ffd46b;
+  --danger: #ff6b6b;
+  --glass: rgba(255,255,255,0.12);
+  --glass-stroke: rgba(255,255,255,0.25);
+  --shadow: 0 20px 60px rgba(0,0,0,0.45);
+  --glow: 0 0 32px rgba(124,247,255,0.45), 0 0 12px rgba(179,136,255,0.35);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  overflow-x: hidden;
+}
+
+/* --- Cinematic Hero Carousel --- */
 .carousel {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 640px;
+  overflow: hidden;
+  isolation: isolate;
 }
 
-.carousel-track {
-    display: flex;
-    width: fit-content;
-    animation: scrollCarousel 120s linear infinite;
+/* animated particles behind everything */
+.hero-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(1000px 600px at 10% 120%, rgba(124,247,255,0.08), transparent 60%),
+    radial-gradient(900px 500px at 95% -10%, rgba(255,122,182,0.08), transparent 60%);
+  z-index: 0;
 }
+
+/* soft animated grid lines */
+.hero-grid {
+  position: absolute; inset: -20% -10%;
+  background:
+   linear-gradient(transparent 49%, rgba(255,255,255,0.06) 50%, transparent 51%) 0 0/100% 40px,
+   linear-gradient(90deg, transparent 49%, rgba(255,255,255,0.06) 50%, transparent 51%) 0 0/40px 100%;
+  filter: blur(0.3px) contrast(120%);
+  opacity: 0.25;
+  animation: panGrid 30s linear infinite;
+  z-index: 0;
+}
+@keyframes panGrid { to { transform: translateY(40px) translateX(40px); } }
+
+/* star sparkle layer */
+.hero-stars::before,
+.hero-stars::after {
+  content: "";
+  position: absolute; inset: -40% -40%;
+  background:
+    radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.8), transparent 40%),
+    radial-gradient(2px 2px at 80% 10%, rgba(124,247,255,0.9), transparent 40%),
+    radial-gradient(1.5px 1.5px at 60% 70%, rgba(255,122,182,0.7), transparent 40%),
+    radial-gradient(1.5px 1.5px at 35% 85%, rgba(255,212,107,0.8), transparent 40%),
+    radial-gradient(1.2px 1.2px at 15% 55%, rgba(255,255,255,0.8), transparent 40%);
+  animation: driftStars 40s linear infinite;
+  opacity: 0.35;
+  z-index: 0;
+}
+.hero-stars::after {
+  filter: blur(1px);
+  animation-duration: 60s;
+  opacity: 0.25;
+}
+@keyframes driftStars { to { transform: translateY(-80px) translateX(80px); } }
+
+/* slide track with duplicated slides for seamless scroll */
+.carousel-track {
+  display: flex;
+  width: fit-content;
+  height: 100%;
+  animation: scrollCarousel 90s linear infinite;
+  z-index: 0;
+}
+.carousel:hover .carousel-track { animation-play-state: paused; }
 
 .carousel-slide {
-    flex-shrink: 0;
-    width: 100vw;
-    height: 100vh;
-    position: relative;
+  flex-shrink: 0;
+  width: 100vw;
+  height: 100%;
+  position: relative;
 }
-
 .carousel-slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: center;
+  animation: kenburns 18s ease-in-out infinite;
+  filter: saturate(1.15) contrast(1.05) brightness(0.85);
+}
+@keyframes kenburns {
+  0% { transform: scale(1) translate(0,0); }
+  50% { transform: scale(1.08) translate(1%, -1%); }
+  100% { transform: scale(1) translate(0,0); }
+}
+@keyframes scrollCarousel {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-300%); } /* first 3 are unique, next 3 duplicate */
 }
 
-body.dark-mode .carousel-slide img {
-    filter: brightness(0.5);
+/* dark mode boost for images */
+body.dark-mode .carousel-slide img { filter: brightness(0.7) saturate(1.1); }
+
+/* Gradient overlay + vignette */
+.hero-overlay {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    radial-gradient(1000px 500px at 80% 10%, rgba(179,136,255,0.25), transparent 60%),
+    radial-gradient(800px 400px at 10% 85%, rgba(124,247,255,0.22), transparent 60%),
+    linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.65));
+}
+.hero-vignette {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  box-shadow: inset 0 0 140px rgba(0,0,0,0.65);
 }
 
-
+/* Hero text content */
 .carousel-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    color: white;
-    z-index: 2;
+  position: absolute;
+  top: 52%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: var(--text);
+  z-index: 2;
+  width: min(100%, 1100px);
+  padding: 24px;
 }
 
 .carousel-text h1 {
-    font-size: 3em;
-    margin-bottom: 10px;
+  font-family: "Space Grotesk", Inter, system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-size: clamp(2.4rem, 5vw, 5rem);
+  line-height: 1.04;
+  margin: 0 0 12px 0;
+  background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary-2), var(--success));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+  filter: drop-shadow(0 6px 24px rgba(124,247,255,0.25));
 }
 
 .carousel-text p {
-    font-size: 1.3em;
-    max-width: 700px;
-    margin: auto;
-}
-.carousel-text h1 {
-  color: white !important;
-  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+  font-size: clamp(1.05rem, 1.3vw, 1.25rem);
+  max-width: 820px;
+  margin: 0 auto 18px auto;
+  color: var(--muted);
 }
 
+/* glass badge row */
+.badges {
+  display: inline-flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--glass);
+  border: 1px solid var(--glass-stroke);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  font-size: 0.9rem;
+  color: #e9f7ff;
+}
+.badge svg { width: 16px; height: 16px; }
 
-.carousel-text .hero-buttons {
-    margin-top: 20px;
+/* Hero buttons with neon glow and ripple */
+.hero-buttons { margin-top: 18px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.btn-neon {
+  --c1: var(--primary);
+  --c2: var(--primary-2);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 26px;
+  background: radial-gradient(120% 180% at 20% 30%, rgba(124,247,255,0.22), rgba(179,136,255,0.18));
+  color: white;
+  text-decoration: none;
+  border-radius: 14px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: var(--glow), inset 0 0 0 1px rgba(255,255,255,0.06);
+  backdrop-filter: blur(8px);
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+  overflow: hidden;
+}
+.btn-neon .shine {
+  position: absolute; inset: -40% -20%;
+  background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.25), transparent 30%);
+  transform: translateX(-120%);
+  animation: sweep 2.8s linear infinite;
+}
+@keyframes sweep { to { transform: translateX(120%); } }
+
+.btn-neon:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 42px rgba(124,247,255,0.5), 0 0 22px rgba(179,136,255,0.35);
+}
+.btn-ghost {
+  background: rgba(255,255,255,0.06);
+  color: #e8eef6;
+  border: 1px dashed rgba(255,255,255,0.28);
+  box-shadow: 0 8px 26px rgba(0,0,0,0.25);
 }
 
-.hero-buttons a {
-    margin: 0 10px;
-    padding: 12px 25px;
-    background-color: #007bff;
-    color: white;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: bold;
+/* Button ripple */
+.btn-neon:active::after {
+  content: "";
+  position: absolute;
+  left: var(--x); top: var(--y);
+  width: 6px; height: 6px; transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(255,255,255,0.7), transparent 60%);
+  border-radius: 50%;
+  animation: ripple 600ms ease-out;
+}
+@keyframes ripple {
+  from { opacity: 0.9; transform: translate(-50%, -50%) scale(1); }
+  to { opacity: 0; transform: translate(-50%, -50%) scale(30); }
 }
 
-.hero-buttons a:hover {
-    background-color: #0056b3;
+/* Mode toggle (optional) */
+.mode-toggle {
+  position: absolute; top: 18px; right: 18px; z-index: 3;
+  display: inline-flex; gap: 8px; padding: 10px 14px;
+  border-radius: 999px; background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15); color: #e8eef6; cursor: pointer;
+  backdrop-filter: blur(8px);
 }
 
-
-@keyframes scrollCarousel {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-300%); } /* 3 images */
-}
-
-
+/* Clinic Cards Section */
 .clinic-cards {
-    padding: 60px 20px;
-    background-color: #f9f9f9;
-    text-align: center;
+  position: relative;
+  padding: 80px 20px;
+  background:
+    radial-gradient(900px 400px at 10% 40%, rgba(124,247,255,0.08), transparent 60%),
+    radial-gradient(800px 380px at 90% 70%, rgba(179,136,255,0.08), transparent 60%),
+    linear-gradient(180deg, #0b0f14, #0b1018);
+  text-align: center;
 }
-
 .clinic-cards h2 {
-    font-size: 2em;
-    margin-bottom: 30px;
-    color: inherit;
+  font-family: "Space Grotesk", Inter, system-ui, sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+  margin-bottom: 24px;
+  background: linear-gradient(90deg, #fff, #d6faff);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 
 .cards-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    padding-bottom: 40px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+  max-width: 1200px; margin: 0 auto 16px auto;
 }
 
-.clinic-link {
-    text-decoration: none;
-    color: inherit;
-}
+.clinic-link { text-decoration: none; color: inherit; }
 
 .clinic-card {
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 20px;
-    width: 280px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    text-align: left;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  background: rgba(10,14,22,0.6);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 18px 18px 20px 18px;
+  text-align: left;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.03);
+  overflow: hidden;
+  backdrop-filter: blur(6px);
+  will-change: transform;
 }
-
+.clinic-card::before {
+  content: "";
+  position: absolute; inset: -1px;
+  border-radius: 16px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(124,247,255,0.5), rgba(179,136,255,0.5), rgba(255,122,182,0.5));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity: 0.35; pointer-events: none;
+}
 .clinic-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-6px) rotate3d(1,-1,0, 0.6deg);
+  box-shadow: 0 18px 40px rgba(124,247,255,0.15);
+  border-color: rgba(124,247,255,0.5);
+}
+.clinic-card h3 {
+  margin: 0 0 10px 0;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.clinic-card p { margin: 4px 0; color: var(--muted); }
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 22px 12px 44px;
+  color: #aab8c7;
+  background: linear-gradient(180deg, #0b1018, #0a0e16 60%);
+  border-top: 1px solid rgba(255,255,255,0.08);
 }
 
-/* Dark mode support */
-body.dark-mode .clinic-cards {
-    background-color: #1e1e1e;
+/* Accessibility: reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .carousel-track, .hero-grid, .hero-stars::before, .hero-stars::after,
+  .btn-neon .shine { animation: none !important; }
 }
 
-body.dark-mode .clinic-card {
-    background-color: #2c2c2c;
-    color: #f1f1f1;
-    border-color: #444;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
-}
+/* Dark mode class keeps working with your existing body.dark-mode */
+body.dark-mode .clinic-cards { background: linear-gradient(180deg, #070a0f, #05070c); }
+body.dark-mode .clinic-card { background: rgba(12,16,24,0.7); color: #e6f2ff; }
+body.dark-mode .clinic-card p { color: #b9c6d6; }
 
-body.dark-mode .clinic-card:hover {
-    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.08);
-}
 </style>
 
+<div class="carousel hero-stars">
+  <div class="hero-particles"></div>
+  <div class="hero-grid"></div>
 
-<div class="carousel">
-    <div class="carousel-track">
-        <div class="carousel-slide"><img src="{{ url_for('static', filename='images/slide1.jpg') }}"></div>
-        <div class="carousel-slide"><img src="{{ url_for('static', filename='images/slide2.jpg') }}"></div>
-        <div class="carousel-slide"><img src="{{ url_for('static', filename='images/slide3.jpg') }}"></div>
+  <div class="carousel-track">
+      <div class="carousel-slide"><img alt="Clinic service 1" src="{{ url_for('static', filename='images/slide1.jpg') }}"></div>
+      <div class="carousel-slide"><img alt="Clinic service 2" src="{{ url_for('static', filename='images/slide2.jpg') }}"></div>
+      <div class="carousel-slide"><img alt="Clinic service 3" src="{{ url_for('static', filename='images/slide3.jpg') }}"></div>
 
-        
-        <div class="carousel-slide"><img src="{{ url_for('static', filename='images/slide1.jpg') }}"></div>
-        <div class="carousel-slide"><img src="{{ url_for('static', filename='images/slide2.jpg') }}"></div>
-        <div class="carousel-slide"><img src="{{ url_for('static', filename='images/slide3.jpg') }}"></div>
+      <!-- duplicates for seamless scroll -->
+      <div class="carousel-slide"><img alt="Clinic service 1" src="{{ url_for('static', filename='images/slide1.jpg') }}"></div>
+      <div class="carousel-slide"><img alt="Clinic service 2" src="{{ url_for('static', filename='images/slide2.jpg') }}"></div>
+      <div class="carousel-slide"><img alt="Clinic service 3" src="{{ url_for('static', filename='images/slide3.jpg') }}"></div>
+  </div>
+
+  <div class="hero-overlay"></div>
+  <div class="hero-vignette"></div>
+
+  <div class="mode-toggle" id="modeToggle" title="Toggle theme">
+    <span>☀️/🌙 Theme</span>
+  </div>
+
+  <div class="carousel-text">
+    <div class="badges">
+      <span class="badge">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 12l4 4 12-12" stroke="currentColor" stroke-width="2"/></svg>
+        Instant booking
+      </span>
+      <span class="badge">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M8 12h8" stroke="currentColor" stroke-width="2"/></svg>
+        Queue optimization
+      </span>
+      <span class="badge">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2v20M2 12h20" stroke="currentColor" stroke-width="2"/></svg>
+        Smart suggestions
+      </span>
     </div>
-    <div class="carousel-text">
-        <h1>BOOK YOUR APPOINTMENT NOW!</h1>
-        <p>A smarter way for clinics and patients to manage appointments.</p>
-        <div class="hero-buttons">
-            <a href="{{ url_for('login') }}">Login</a>
-            <a href="{{ url_for('register') }}">Register</a>
-        </div>
+
+    <h1>BOOK YOUR APPOINTMENT NOW!</h1>
+    <p>A smarter way for clinics and patients to manage appointments. Real-time slots, smooth check-ins, and a touch of neon magic.</p>
+
+    <div class="hero-buttons">
+      <a class="btn-neon" href="{{ url_for('login') }}" id="loginBtn">
+        <span class="shine"></span> Login
+      </a>
+      <a class="btn-neon btn-ghost" href="{{ url_for('register') }}" id="registerBtn">
+        <span class="shine"></span> Register
+      </a>
     </div>
+  </div>
 </div>
 
-
 <div class="clinic-cards">
-    <h2>Our Partner Clinics</h2>
-    <div class="cards-container">
+  <h2>Our Partner Clinics</h2>
+  <div class="cards-container">
+    <a href="https://rubyhall.com" class="clinic-link" target="_blank" rel="noopener">
+      <div class="clinic-card tilt">
+        <h3>Ruby Hall Clinic - Wanowrie</h3>
+        <p><strong>Address:</strong> 93/C, Wanowrie, Pune, Maharashtra 411040</p>
+        <p><strong>Phone:</strong> +91-20-6641-7700</p>
+        <p><strong>Email:</strong> info@rubyhall.com</p>
+      </div>
+    </a>
 
-        <a href="https://rubyhall.com" class="clinic-link" target="_blank" rel="noopener">
-            <div class="clinic-card">
-                <h3>Ruby Hall Clinic - Wanowrie</h3>
-                <p><strong>Address:</strong> 93/C, Wanowrie, Pune, Maharashtra 411040</p>
-                <p><strong>Phone:</strong> +91-20-6641-7700</p>
-                <p><strong>Email:</strong> info@rubyhall.com</p>
-            </div>
-        </a>
+    <a href="https://medipointhospitalpune.in/" class="clinic-link" target="_blank" rel="noopener">
+      <div class="clinic-card tilt">
+        <h3>Medipoint Hospital - Aundh</h3>
+        <p><strong>Address:</strong> ITI Road, Aundh, Pune, Maharashtra 411007</p>
+        <p><strong>Phone:</strong> +91-20-2588-1234</p>
+        <p><strong>Email:</strong> contact@medipoint.in</p>
+      </div>
+    </a>
 
-        <a href="https://medipointhospitalpune.in/" class="clinic-link" target="_blank" rel="noopener">
-            <div class="clinic-card">
-                <h3>Medipoint Hospital - Aundh</h3>
-                <p><strong>Address:</strong> ITI Road, Aundh, Pune, Maharashtra 411007</p>
-                <p><strong>Phone:</strong> +91-20-2588-1234</p>
-                <p><strong>Email:</strong> contact@medipoint.in</p>
-            </div>
-        </a>
+    <a href="https://www.dmhospital.org" class="clinic-link" target="_blank" rel="noopener">
+      <div class="clinic-card tilt">
+        <h3>Deenanath Mangeshkar Hospital - Erandwane</h3>
+        <p><strong>Address:</strong> Near Mhatre Bridge, Erandwane, Pune, Maharashtra 411004</p>
+        <p><strong>Phone:</strong> +91-20-4015-1000</p>
+        <p><strong>Email:</strong> info@dmhospital.org</p>
+      </div>
+    </a>
 
-        <a href="https://www.dmhospital.org" class="clinic-link" target="_blank" rel="noopener">
-            <div class="clinic-card">
-                <h3>Deenanath Mangeshkar Hospital - Erandwane</h3>
-                <p><strong>Address:</strong> Near Mhatre Bridge, Erandwane, Pune, Maharashtra 411004</p>
-                <p><strong>Phone:</strong> +91-20-4015-1000</p>
-                <p><strong>Email:</strong> info@dmhospital.org</p>
-            </div>
-        </a>
-
-        <a href="https://lifelinehospitalwagholi.in/" class="clinic-link" target="_blank" rel="noopener">
-            <div class="clinic-card">
-                <h3>Lifeline Hospital - Baner</h3>
-                <p><strong>Address:</strong> Baner Road, Baner, Pune, Maharashtra 411045</p>
-                <p><strong>Phone:</strong> +91-20-2729-4567</p>
-                <p><strong>Email:</strong> lifeline@hospital.com</p>
-            </div>
-        </a>
-
-    </div>
+    <a href="https://lifelinehospitalwagholi.in/" class="clinic-link" target="_blank" rel="noopener">
+      <div class="clinic-card tilt">
+        <h3>Lifeline Hospital - Baner</h3>
+        <p><strong>Address:</strong> Baner Road, Baner, Pune, Maharashtra 411045</p>
+        <p><strong>Phone:</strong> +91-20-2729-4567</p>
+        <p><strong>Email:</strong> lifeline@hospital.com</p>
+      </div>
+    </a>
+  </div>
 </div>
 
 <div class="footer">
-    &copy; 2025 ECOIConnect. Built with ❤ for IEEE Hackathon.
+  &copy; 2025 ECOIConnect. Built with ❤ for IEEE Hackathon.
 </div>
+
+<script>
+/* Neon ripple coordinates */
+document.querySelectorAll('.btn-neon').forEach(b=>{
+  b.addEventListener('pointerdown', e=>{
+    const rect = b.getBoundingClientRect();
+    b.style.setProperty('--x', (e.clientX - rect.left) + 'px');
+    b.style.setProperty('--y', (e.clientY - rect.top) + 'px');
+  });
+});
+
+/* Tilt effect for cards */
+document.querySelectorAll('.tilt').forEach(card=>{
+  card.addEventListener('mousemove', e=>{
+    const r = card.getBoundingClientRect();
+    const cx = e.clientX - r.left, cy = e.clientY - r.top;
+    const rx = ((cy / r.height) - 0.5) * -8;
+    const ry = ((cx / r.width) - 0.5) * 8;
+    card.style.transform = `perspective(700px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
+  });
+  card.addEventListener('mouseleave', ()=> card.style.transform = '');
+});
+
+/* Theme toggle persists with localStorage */
+const body = document.body;
+const modeToggle = document.getElementById('modeToggle');
+const saved = localStorage.getItem('mode');
+if(saved === 'dark') body.classList.add('dark-mode');
+modeToggle?.addEventListener('click', ()=>{
+  body.classList.toggle('dark-mode');
+  localStorage.setItem('mode', body.classList.contains('dark-mode') ? 'dark' : 'light');
+});
+
+/* Simple confetti burst on CTA click */
+function confettiBurst(x, y) {
+  const colors = ['#7cf7ff','#b388ff','#ff7ab6','#ffd46b','#7affb3'];
+  for (let i=0;i<24;i++) {
+    const d = document.createElement('div');
+    d.style.position='fixed';
+    d.style.left = x+'px'; d.style.top = y+'px';
+    d.style.width='6px'; d.style.height='10px';
+    d.style.background=colors[Math.floor(Math.random()*colors.length)];
+    d.style.borderRadius='2px';
+    d.style.transform=`translate(-50%,-50%) rotate(${Math.random()*360}deg)`;
+    d.style.zIndex=9999;
+    document.body.appendChild(d);
+    const dx = (Math.random()-0.5)*300, dy = (Math.random()-0.9)*420;
+    const rot = (Math.random()-0.5)*720;
+    d.animate([
+      { transform: d.style.transform, opacity: 1 },
+      { transform: `translate(${dx}px, ${dy}px) rotate(${rot}deg)`, opacity: 0 }
+    ], { duration: 900 + Math.random()*600, easing: 'cubic-bezier(.2,.8,.2,1)' })
+     .onfinish = ()=> d.remove();
+  }
+}
+['loginBtn','registerBtn'].forEach(id=>{
+  const el = document.getElementById(id);
+  el?.addEventListener('click', (e)=> {
+    confettiBurst(e.clientX, e.clientY);
+  });
+});
+</script>
 {% endblock %}

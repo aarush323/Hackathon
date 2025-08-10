@@ -1,957 +1,292 @@
-
-
-  * {
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
-  }
-
-
-
-  body {
-    /* fallback for ultra old browsers */
-    color: #2c3e50;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
-  }
-
-  /* ---- Modern light mode background ---- */
-  body:not(.dark-mode) {
-    background:
-      linear-gradient(120deg, rgba(240,244,255,0.95) 0%, rgba(235,245,255,0.97) 100%),
-      radial-gradient(ellipse at 80% 20%, #c4f0fe 0%, transparent 60%),
-      radial-gradient(ellipse at 0% 90%, #dedaff 0%, transparent 70%),
-      radial-gradient(circle at 60% 80%, #ffe9ec 0%, transparent 70%);
-    background-blend-mode: lighten;
-    color: #2c3e50;
-  }
-
-  /* ---- Container with glass effect ---- */
-  .container {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 40px;
-    background: rgba(255, 255, 255, 0.86);
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.10);
-    backdrop-filter: blur(2px);
-  }
-
-  /* =============== */
-  /* HEADING STYLES  */
-  /* =============== */
-  h1, h2, h3 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #2c3e50;
-  }
-
-  /* ========================= */
-  /* DASHBOARD & SECTION CARD  */
-  /* ========================= */
-  .dashboard-section {
-    margin: 30px 0;
-    padding: 20px;
-    border: 1px solid #dfe6e9;
-    border-radius: 10px;
-    background-color: #f9fbfd;
-  }
-
-  /* ================ */
-  /* FORM INPUTS      */
-  /* ================ */
-  input[type="text"],
-input[type="password"],
-input[type="email"],
-select {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0 20px 0;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 16px;
+/* === CORE RESET === */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-
-  input[type="radio"] {
-    margin-right: 10px;
-    transform: scale(1.2);
-    accent-color: #007bff;
-  }
-
-  /* ========================= */
-  /* LABELS & DISABLED STATES  */
-  /* ========================= */
-  label {
-    font-size: 16px;
-    display: block;
-    margin-bottom: 12px;
-    cursor: pointer;
-  }
-
-  input[disabled] + label, 
-  label input[disabled] {
-    color: #aaa;
-    text-decoration: line-through;
-  }
-
-  /* ============== */
-  /* BUTTON STYLES  */
-  /* ============== */
-  button {
-    background-color: #007bff;
-    color: white;
-    font-weight: bold;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-
-  button:hover {
-    background-color: #0056b3;
-  }
-
-  /* ===== LINKS ==== */
-  a {
-    color: #007bff;
-    text-decoration: none;
-  }
-  a:hover {
-    text-decoration: underline;
-    color: #0056b3;
-  }
-
-  /* =============== */
-  /* FLASH MESSAGES  */
-  /* =============== */
-  .flash {
-    padding: 10px;
-    margin-bottom: 20px;
-    border-radius: 6px;
-    color: #fff;
-    background-color: #28a745;
-    text-align: center;
-  }
-
-  /* =============== */
-  /* RESPONSIVE      */
-  /* =============== */
-  @media (max-width: 600px) {
-    .container {
-      padding: 20px;
-    }
-    button {
-      width: 100%;
-    }
-  }
-
-  /* =============== */
-  /* POPUP ALERT     */
-  /* =============== */
-  .popup-alert {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #d4edda;
-    color: #155724;
-    padding: 15px 30px;
-    border-radius: 8px;
-    border: 1px solid #c3e6cb;
-    box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
-    font-weight: 500;
-    font-size: 16px;
-    z-index: 200000;
-    text-align: center;
-  }
-
-  /* ========================= */
-  /* HOMEPAGE & NAV COMPONENTS */
-  /* ========================= */
-  .navbar {
-    background-color: white;
-    padding: 20px 40px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .navbar h2 {
-    font-size: 30px;
-    color: #007bff;
-    font-weight: bold;
-  }
-
-  .navbar .nav-links a {
-    margin-left: 25px;
-    text-decoration: none;
-    font-weight: 500;
-    color: #2c3e50;
-    transition: 0.3s;
-  }
-
-  .navbar .nav-links a:hover {
-    color: #007bff;
-  }
-
-  .hero {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 100px 20px 120px 20px;
-    background-image: url('https://images.unsplash.com/photo-1588776814546-ec7e5b940b25?auto=format&fit=crop&w=1740&q=80');
-    background-size: cover;
-    background-position: center;
-    color: white;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
-  }
-
-  /* Light mode: make .hero p legible on light image */
-  body:not(.dark-mode) .hero p {
-    color: #4a6380;
-    text-shadow: none;
-  }
-
-  .hero h1 {
-    font-size: 48px;
-    margin-bottom: 20px;
-  }
-
-  .hero p {
-    font-size: 20px;
-    max-width: 700px;
-    margin-bottom: 40px;
-  }
-
-  .hero-buttons a {
-    text-decoration: none;
-    padding: 15px 35px;
-    border-radius: 8px;
-    font-size: 18px;
-    font-weight: 500;
-    margin: 10px;
-    display: inline-block;
-    transition: background-color 0.3s, color 0.3s;
-  }
-
-  /* Separate login/register buttons distinctly */
-  .btn-login {
-    background-color: #007bff;
-    color: white;
-  }
-  .btn-login:hover {
-    background-color: #0056b3;
-  }
-  .btn-register {
-    background-color: #007bff;
-    border: 2px solid white;
-    color: white;
-  }
-  .btn-register:hover {
-   background-color: #0056b3;
-  }
-  .btn-register:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-  }
-
-  .footer {
-    text-align: center;
-    padding: 20px;
-    color: #868e96;
-    font-size: 14px;
-    background-color: #f1f3f5;
-  }
-
-  /* ================ */
-  /* DARK MODE STYLES */
-  /* ================ */
-body.dark-mode .btn-login {
-    background-color: transparent;
-    border: 2px solid #f1f1f1;
-    color: #f1f1f1;
-  }
-
-  body.dark-mode .btn-login:hover {
-    background-color: #f1f1f1;
-    color: #000;
-  }
-  body.dark-mode {
-    background: linear-gradient(to right, #1e1e1e, #343a40);
-    color: #f1f1f1;
-  }
-
-  body.dark-mode .navbar {
-    background-color: #1c1c1c;
-    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.05);
-  }
-
-  body.dark-mode .navbar h2,
-  body.dark-mode .navbar .nav-links a {
-    color: #f8f9fa;
-  }
-
-  body.dark-mode .navbar .nav-links a:hover {
-    color: #0d6efd;
-  }
-
-  body.dark-mode .hero h1 {
-    color: #f1f1f1;
-  }
-
-  body.dark-mode .hero p {
-    color: #cccccc;
-  }
-
-  body.dark-mode .btn-register {
-    background-color: transparent;
-    border: 2px solid #f1f1f1;
-    color: #f1f1f1;
-  }
-
-  body.dark-mode .btn-register:hover {
-    background-color: #f1f1f1;
-    color: #000;
-  }
-
-  body.dark-mode .footer {
-    background-color: #212529;
-    color: #ccc;
-  }
-
-  /* ======== */
-  /* TOGGLE   */
-  /* ======== */
-  /* .toggle-btn {
-    margin-left: 20px;
-    background-color: transparent;
-    border: 2px solid #007bff;
-    color: #007bff;
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: 0.3s;
-  }
-  .toggle-btn:hover {
-    background-color: #007bff;
-    color: white;
-  } */
-
-  .appointment-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-top: 20px;
-  }
-
-  .appointment-card {
-    background-color: #f0f0f0;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-  }
-  /* ============================== */
-  /* STYLED RADIO BUTTONS AS BUTTON */
-  /* ============================== */
-
-  .timeslot-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    margin-bottom: 20px;
-  }
-
-  .timeslot-btn {
-    padding: 10px 18px;
-    background-color: #f0f0f0;
-    border: 2px solid #007bff;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.2s ease-in-out;
-    font-weight: 500;
-    color: #2c3e50;
-  }
-
-  .timeslot-btn:hover {
-    background-color: #e6f0ff;
-  }
-
-  /* Highlight when selected */
-  .timeslot-radio:checked + .timeslot-btn {
-    background-color: #007bff;
-    color: white;
-  }
-
-  /* Greyed out and unclickable if booked */
-  .timeslot-btn.disabled {
-    background-color: #ddd;
-    color: #999;
-    border-color: #aaa;
-    cursor: not-allowed;
-    text-decoration: line-through;
-  }
-  /* ============================== */
-  /* STYLED RADIO BUTTONS AS BUTTON */
-  /* ============================== */
-
-  .timeslot-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    margin-bottom: 20px;
-  }
-
-  .timeslot-btn {
-    padding: 10px 18px;
-    background-color: #f0f0f0;
-    border: 2px solid #007bff;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.2s ease-in-out;
-    font-weight: 500;
-    color: #2c3e50;
-  }
-
-  .timeslot-btn:hover {
-    background-color: #e6f0ff;
-  }
-
-  /* Highlight when selected */
-  .timeslot-radio:checked + .timeslot-btn {
-    background-color: #007bff;
-    color: white;
-  }
-
-  /* Greyed out and unclickable if booked */
-  .timeslot-btn.disabled {
-    background-color: #ddd;
-    color: #999;
-    border-color: #aaa;
-    cursor: not-allowed;
-    text-decoration: line-through;
-  }
-  .appointments-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    font-size: 16px;
-    font-family: sans-serif;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  }
-
-  .appointments-table th,
-  .appointments-table td {
-    border: 1px solid #ccc;
-    padding: 12px 15px;
-    text-align: left;
-  }
-
-  .appointments-table thead {
-    background-color: #007bff;
-    color: white;
-  }
-
-  .appointments-table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-
-  .appointments-table tbody tr:hover {
-    background-color: #f1f1f1;
-  }
-  .logout-bar {
-    text-align: right;
-    margin-bottom: 15px;
-  }
-
-  .logout-btn {
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    padding: 8px 14px;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-
-  .logout-btn:hover {
-    background-color: #c0392b;
-  }
-  #hospital-fields {
-    transition: all 0.3s ease;
-  }
-
-  /* ================ */
-  /* DOCTOR INFO CARD */
-  /* ================ */
-  .doctor-info {
-    text-align: center;
-    margin-bottom: 30px;
-  }
-
-  .doctor-avatar {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    border: 3px solid #007bff;
-    object-fit: cover;
-    margin-bottom: 10px;
-  }
-
-  .stethoscope-icon {
-    font-size: 24px;
-    margin-right: 6px;
-  }
-
-  .subtitle {
-    color: #6c757d;
-    font-size: 16px;
-  }
-
-  /* =============== */
-  /* BACKGROUND ILLUSTRATION */
-  /* =============== */
-  .illustration-bg::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('https://www.svgrepo.com/show/508327/medical-report.svg');
-    background-repeat: no-repeat;
-    background-position: bottom right;
-    background-size: 180px;
-    opacity: 0.03;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* =============== */
-  /* ANIMATIONS */
-  /* =============== */
-  .fade-in {
-    animation: fadeIn 0.8s ease-in-out;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* =============== */
-  /* BACK TO DASHBOARD BUTTON */
-  /* =============== */
-  .back-btn {
-    display: block;
-    margin: 30px auto 0;
-    background-color: #007bff;
-    color: white;
-    font-weight: bold;
-    padding: 12px 25px;
-    border-radius: 8px;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-
-  .back-btn:hover {
-    background-color: #0056b3;
-  }
-.glass-card {
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 1rem;
-  padding: 2rem;
-  margin: 2rem auto;
-  max-width: 1000px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-}
-/* Fix containers and cards in dark mode */
-
-body.dark-mode .container,
-body.dark-mode .dashboard-section,
-body.dark-mode .clinic-card,
-body.dark-mode .glass-card,
-body.dark-mode .appointment-card {
-  background-color: #1e1e1e;
-  color: #f1f1f1;
-  border-color: #444;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+/* === BASE COLORS === */
+:root {
+  --bg: #0b0f14;
+  --text: #e8eef6;
+  --muted: #a9b7c6;
+  --primary: #7cf7ff;
+  --primary-2: #b388ff;
+  --accent: #ff7ab6;
+  --success: #7affb3;
+  --glass: rgba(255,255,255,0.12);
+  --glass-stroke: rgba(255,255,255,0.25);
+  --shadow: 0 20px 60px rgba(0,0,0,0.45);
+  --glow: 0 0 32px rgba(124,247,255,0.45), 0 0 12px rgba(179,136,255,0.35);
 }
 
-body.dark-mode input,
-body.dark-mode select {
-  background-color: #2b2b2b;
-  color: #f1f1f1;
-  border: 1px solid #555;
-}
-
-body.dark-mode label {
-  color: #f1f1f1;
-}
-
-body.dark-mode h1,
-body.dark-mode h2,
-body.dark-mode h3 {
-  color: #f1f1f1;
-}
-
-body.dark-mode .appointments-table {
-  background-color: #2a2a2a;
-  color: #f1f1f1;
-}
-
-body.dark-mode .appointments-table thead {
-  background-color: #343a40;
-  color: #ffffff;
-}
-
-body.dark-mode .appointments-table tbody tr:nth-child(even) {
-  background-color: #2e2e2e;
-}
-
-body.dark-mode .appointments-table tbody tr:hover {
-  background-color: #3a3a3a;
-}
-/* Background Image Setup */
 body {
-    background: url("/static/images/slide1.jpg") no-repeat center center fixed;
-    background-size: cover;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    min-height: 100vh;
-    position: relative;
-    margin: 0;
-    padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-/* Optional: Light Tint Overlay for better text readability */
-body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background: rgba(255, 255, 255, 0.65); /* adjust to rgba(0,0,0,0.5) for dark tint */
-    z-index: -1;
+/* === CINEMATIC BACKGROUND === */
+.carousel-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+}
+.carousel-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(1.15) contrast(1.05) brightness(0.85);
+  animation: kenburns 18s ease-in-out infinite;
+}
+@keyframes kenburns {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.09) translate(1.5%, -1%); }
+  100% { transform: scale(1); }
+}
+.hero-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(1000px 500px at 80% 10%, rgba(179,136,255,0.25), transparent 60%),
+    radial-gradient(800px 400px at 10% 85%, rgba(124,247,255,0.22), transparent 60%),
+    linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.66));
+}
+.hero-vignette {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  box-shadow: inset 0 0 140px rgba(0,0,0,0.65);
 }
 
-/* Container that holds the form */
-.container {
-    background-color: rgba(255, 255, 255, 0.92);
-    padding: 2rem;
-    margin: 6rem auto;
-    border-radius: 12px;
-    max-width: 600px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-}
-
-/* Logout button */
-.logout-btn {
-    position: absolute;
-    top: 20px;
-    right: 30px;
-}
-
-.logout-btn a {
-    text-decoration: none;
-    color: #007bff;
-    font-weight: bold;
-}
-.clinic-selection-container {
-  max-width: 650px;
-  margin: 5rem auto;
-  padding: 2.5rem;
-  border-radius: 15px;
-  background-color: #f8f9fa;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-}
-
-body.dark .clinic-selection-container {
-  background-color: #1e1e1e;
-  color: #f0f0f0;
-}
-
-.clinic-form-box {
+/* === HERO SECTION === */
+.login-hero {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
 }
-
-.form-group {
+.badges {
   display: flex;
-  flex-direction: column;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--glass);
+  border: 1px solid var(--glass-stroke);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  font-size: 0.9rem;
+  color: #e9f7ff;
+}
+.badge svg { width: 16px; height: 16px; }
+
+.login-headline {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.3rem, 5vw, 4.1rem);
+  background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary-2), var(--success));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 6px 24px rgba(124,247,255,0.25));
+  margin-bottom: 14px;
+}
+.login-tagline {
+  font-size: clamp(1.05rem, 1.3vw, 1.3rem);
+  max-width: 700px;
+  color: var(--muted);
+  margin-bottom: 1.6em;
 }
 
-label {
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+/* === HERO BUTTONS === */
+.hero-buttons {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 20px 0;
 }
-
-select {
-  padding: 0.6rem;
+.btn-neon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  background: radial-gradient(120% 180% at 20% 30%, rgba(124,247,255,0.22), rgba(179,136,255,0.18));
+  border-radius: 14px;
+  font-weight: 800;
   font-size: 1rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  background-color: white;
-  color: black;
-}
-
-body.dark select {
-  background-color: #2a2a2a;
-  color: #fff;
-  border: 1px solid #555;
-}
-
-.clinic-btn {
-  padding: 0.8rem 1rem;
-  font-size: 1.1rem;
-  font-weight: bold;
-  background-color: #007bff;
   color: white;
-  border: none;
-  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: var(--glow);
+  backdrop-filter: blur(8px);
   cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.clinic-btn:hover {
-  background-color: #0056b3;
-}
-
-.flash-messages {
-  color: red;
-  margin-bottom: 1rem;
-  list-style: none;
-  padding-left: 0;
-}
-
-.logout-btn {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-}
-.background-container {
-    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-                url("/static/slide1.jpg") no-repeat center center fixed;
-    background-size: cover;
-    min-height: 100vh;
-    padding: 50px 20px;
-    color: white;
-}
-
-.container {
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 30px;
-    border-radius: 10px;
-    backdrop-filter: blur(4px);
-    max-width: 600px;
-    margin: auto;
-}
-
-.logout-btn {
-    position: absolute;
-    top: 20px;
-    right: 30px;
-}
-
-.logout-btn a {
-    color: white;
-    background: rgba(0, 0, 0, 0.5);
-    padding: 8px 12px;
-    border-radius: 5px;
-    text-decoration: none;
-}
-
-
-.background-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-}
-
-.background-img {
-    position: absolute;
-    object-fit: cover;
-    z-index: -1;
-    opacity: 0.6;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    object-fit: cover;
-    
-}
-
-.content-over-image {
-    position: relative;
-    z-index: 1;
-    padding: 60px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-}
-
-.container {
-    background: rgba(255, 255, 255, 0.85);
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    max-width: 500px;
-    width: 100%;
-}
-
-
-
-.logout-btn {
-    position: absolute;
-    top: 20px;
-    right: 30px;
-    z-index: 9999; /* Make sure it’s above all other elements */
-}
-
-.logout-btn a {
-    background-color: #e74c3c;
-    color: white;
-    padding: 10px 18px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: bold;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    transition: background-color 0.3s ease;
-}
-
-.logout-btn a:hover {
-    background-color: #c0392b;
-}
-
-.background-img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 0; /* Push background image behind everything */
-}
-
-.content-over-image {
-    position: relative;
-    z-index: 1; /* Content sits above background */
-}
-
-
-.logout-btn.clinic-logout {
-  position: absolute;
-  top: 20px;
-  right: 30px;
-  z-index: 10000;
-  background-color: #e74c3c;
-  color: white;
-  padding: 10px 18px;
-  border-radius: 6px;
   text-decoration: none;
-  font-weight: bold;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  transition: background-color 0.3s ease;
+}
+.btn-neon:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 46px rgba(124,247,255,0.5), 0 0 22px rgba(179,136,255,0.35);
+}
+.btn-neon .shine {
+  display: none;
+}
+@keyframes sweep { to { transform: translateX(120%); } }
+.btn-ghost {
+  background: rgba(255,255,255,0.06);
+  border: 1px dashed rgba(255,255,255,0.26);
 }
 
-.logout-btn.clinic-logout:hover {
-  background-color: #c0392b;
+/* Ripple active effect */
+.btn-neon:active::after {
+  content: "";
+  position: absolute;
+  left: var(--x); top: var(--y);
+  width: 6px; height: 6px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(255,255,255,0.7), transparent 60%);
+  border-radius: 50%;
+  animation: ripple 600ms ease-out;
+}
+@keyframes ripple {
+  from { opacity: 0.9; transform: translate(-50%, -50%) scale(1); }
+  to { opacity: 0; transform: translate(-50%, -50%) scale(30); }
 }
 
-
-body.dark-mode .logout-btn.clinic-logout {
-  background-color: #c0392b;
-  color: #fff;
+/* === GLASS FORM BOX === */
+.glass-form-box {
+  margin-top: 30px;
+  padding: 32px;
+  width: min(92vw, 395px);
+  border-radius: 16px;
+  background: rgba(10,14,22,0.65);
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
 }
-
-.toggle-btn {
-  position: fixed;
-  top: 20px;
-  left: 30px;
-  z-index: 100;
-  background-color: #f0f0f0;
-  color: #007bff;
-  border: 2px solid #007bff;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.glass-form-box h2 {
+  background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary-2), var(--success));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  margin-bottom: 16px;
 }
-
-.toggle-btn:hover {
-  background-color: #007bff;
-  color: white;
+.glass-form-box input,
+.glass-form-box select {
+  width: 100%;
+  padding: 12px 14px;
+  margin: 8px 0 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.17);
+  background: rgba(255,255,255,0.068);
+  color: #eaf6ff;
+  outline: none;
+  font-size: 1rem;
+  backdrop-filter: blur(6px);
+  transition: box-shadow 0.2s, border-color 0.2s, background 0.2s;
 }
-
-body.dark-mode .toggle-btn {
-  background-color: #2b2b2b;
-  color: #f1f1f1;
-  border-color: #ccc;
+.glass-form-box input:focus,
+.glass-form-box select:focus {
+  border-color: rgba(124,247,255,0.6);
+  box-shadow: 0 0 0 4px rgba(124,247,255,0.17);
 }
-
-
-.logout-btn.clinic-logout {
-  position: fixed;
-  top: 20px;
-  right: 30px;
-  z-index: 9999;
-}
-.toggle-btn {
-  position: fixed;
-  top: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10000;
-  background-color: #f0f0f0;
+.glass-form-box button[type="submit"] {
+  margin-top: 8px;
+  width: 100%;
+  padding: 13px 0;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.11rem;
   border: none;
-  padding: 8px 16px;
-  border-radius: 5px;
-  font-weight: bold;
+  background: radial-gradient(120% 180% at 20% 30%, rgba(124,247,255,0.28), rgba(179,136,255,0.18));
+  color: white;
   cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  backdrop-filter: blur(6px);
+  transition: 0.2s ease;
+}
+.glass-form-box button[type="submit"]:hover {
+  box-shadow: 0 0 32px rgba(124,247,255,0.22);
+  transform: scale(1.018);
+}
+.glass-form-box p {
+  margin-top: 18px;
+  font-size: 0.95rem;
+  color: #cbeffd;
+}
+.glass-form-box a { color: var(--primary-2); }
+.glass-form-box a:hover { color: var(--primary); }
+
+/* === DARK MODE OVERRIDES === */
+body.dark-mode .carousel-bg img { filter: brightness(0.63) saturate(1.12); }
+body.dark-mode .glass-form-box { background: rgba(12,16,24,0.74); }
+body.dark-mode .glass-form-box input,
+body.dark-mode .glass-form-box button,
+body.dark-mode .glass-form-box select { color: #f7fbff; }
+
+.timeslot-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
-.toggle-btn:hover {
-  background-color: #ddd;
+/* Visually hide radio, keep it accessible for label toggle */
+.timeslot-radio {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
 .timeslot-btn {
-  padding: 10px 18px;
-  background-color: #f0f0f0;
-  border: 2px solid #007bff;
+  padding: 10px 20px;
+  font-weight: 600;
   border-radius: 6px;
+  border: 2px solid var(--primary);
+  background: var(--glass);
+  color: var(--text);
   cursor: pointer;
-  transition: 0.2s ease-in-out;
-  font-weight: 500;
-  color: #2c3e50; 
+  transition: background .2s, color .2s, box-shadow .2s;
+  box-shadow: var(--shadow);
+  margin-bottom: 5px;
+  min-width: 90px;
+  text-align: center;
 }
 
-
-body.dark-mode .timeslot-btn {
-  color: #2c3e50 !important;
-  background-color: #e0e0e0; 
-  border-color: #007bff;
+/* Selected slot gets neon highlight */
+.timeslot-radio:checked + .timeslot-btn {
+  background: linear-gradient(90deg, var(--primary), var(--primary-2));
+  color: #fff;
+  border-color: var(--accent);
+  box-shadow: 0 2px 16px var(--primary);
 }
+
+/* Booked slot: look grey, not clickable */
+.timeslot-btn.disabled,
+.timeslot-radio:disabled + .timeslot-btn {
+  background: #222;
+  color: #888;
+  border-color: #555;
+  cursor: not-allowed;
+  opacity: 0.7;
+  text-decoration: line-through;
+  pointer-events: none;
+}
+

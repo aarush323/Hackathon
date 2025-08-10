@@ -6,20 +6,16 @@
   <title>{% block title %}ECOIConnect{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   {% block extra_head %}{% endblock %}
- 
 </head>
 <body>
   <button onclick="toggleDarkMode()" class="toggle-btn">
     🌙 Toggle Dark Mode
   </button>
 
+  {# Optional navbar — now empty unless child overrides it #}
   {% if show_navbar %}
   <div class="navbar">
-    <h2>ECOIConnect</h2>
-    <div class="nav-links">
-      <a href="{{ url_for('login') }}">Login</a>
-      <a href="{{ url_for('register') }}">Register</a>
-    </div>
+    {% block navbar_content %}{% endblock %}
   </div>
   {% endif %}
 
@@ -42,16 +38,63 @@
   {% block content %}{% endblock %}
 
   <script>
+    // DARK MODE TOGGLE
     function toggleDarkMode() {
       document.body.classList.toggle('dark-mode');
       localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
     }
-
+    // Restore dark mode preference
     window.onload = function () {
       if (localStorage.getItem('darkMode') === 'true') {
         document.body.classList.add('dark-mode');
       }
     };
+
+    // NEON BUTTON RIPPLE EFFECT & CONFETTI
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('.btn-neon').forEach(b => {
+        b.addEventListener('pointerdown', e => {
+          const rect = b.getBoundingClientRect();
+          b.style.setProperty('--x', (e.clientX - rect.left) + 'px');
+          b.style.setProperty('--y', (e.clientY - rect.top) + 'px');
+        });
+      });
+
+      ['loginBtn','registerBtn','logoutBtn'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('click', function(e) {
+            if (this.tagName.toLowerCase() === 'a') {
+              e.preventDefault();
+              confettiBurst(e.clientX, e.clientY);
+              setTimeout(() => { window.location.href = this.href; }, 600);
+            }
+          });
+        }
+      });
+    });
+
+    function confettiBurst(x, y) {
+      const colors = ['#7cf7ff','#b388ff','#ff7ab6','#ffd46b','#7affb3'];
+      for (let i=0;i<24;i++) {
+        const d = document.createElement('div');
+        d.style.position='fixed';
+        d.style.left = x+'px'; d.style.top = y+'px';
+        d.style.width='6px'; d.style.height='10px';
+        d.style.background=colors[Math.floor(Math.random()*colors.length)];
+        d.style.borderRadius='2px';
+        d.style.transform=`translate(-50%,-50%) rotate(${Math.random()*360}deg)`;
+        d.style.zIndex=9999;
+        document.body.appendChild(d);
+        const dx = (Math.random()-0.5)*300, dy = (Math.random()-0.9)*420;
+        const rot = (Math.random()-0.5)*720;
+        d.animate([
+          { transform: d.style.transform, opacity: 1 },
+          { transform: `translate(${dx}px, ${dy}px) rotate(${rot}deg)`, opacity: 0 }
+        ], { duration: 900 + Math.random()*600, easing: 'cubic-bezier(.2,.8,.2,1)' })
+        .onfinish = () => d.remove();
+      }
+    }
   </script>
 
   {% block scripts %}{% endblock %}

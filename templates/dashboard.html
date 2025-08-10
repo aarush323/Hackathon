@@ -1,87 +1,86 @@
-{# dashboard.html #}
 {% extends "base.html" %}
-{% set show_navbar = False %}
+{% set show_navbar = false %}
 
 {% block title %}Patient Dashboard{% endblock %}
 
-
-
 {% block content %}
+<div class="carousel-bg">
+  <img src="{{ url_for('static', filename='images/slide1.jpg') }}" alt="Dashboard Background" />
+</div>
+<div class="hero-overlay"></div>
+<div class="hero-vignette"></div>
 
+<div class="login-hero">
+  <div class="badges">
+    <span class="badge">...Instant booking...</span>
+    <span class="badge">...Queue optimization...</span>
+    <span class="badge">...Smart suggestions...</span>
+  </div>
 
-{% if session['user_id'] %}
-  {% if request.endpoint == 'home' %}
-    <a href="{{ url_for('logout') }}" class="logout-btn logout-home">Logout</a>
-  {% else %}
-    <a href="{{ url_for('logout') }}" class="logout-btn clinic-logout">Logout</a>
+  <div class="login-headline">Your Appointment Dashboard</div>
+  <div class="login-tagline">Book appointments instantly with top doctors at your clinic.</div>
+
+  {% if session['user_id'] %}
+    <div class="hero-buttons" style="margin-bottom: 10px;">
+      <a href="{{ url_for('logout') }}" class="btn-neon btn-ghost" id="logoutBtn">
+        <span class="shine"></span> Logout
+      </a>
+    </div>
   {% endif %}
-{% endif %}
 
-<div class="clinic-selection-container glass-card">
-
-  <h1>Welcome to Your Dashboard</h1>
-
-  
-  <div class="dashboard-section">
-    <h3>Choose your Doctor for the Appointment</h3>
+  <div class="glass-form-box" style="margin-top: 18px;">
+    <h2>Choose Your Doctor</h2>
     <form method="POST">
       {% for doctor in docs %}
         <label>
           <input type="radio" name="doc_id" value="{{ doctor.id }}" required
-                 {% if selected_doctor and doctor.id == selected_doctor.id %}checked{% endif %}>
+            {% if selected_doctor and doctor.id == selected_doctor.id %}checked{% endif %}>
           Dr. {{ doctor.email }}
         </label>
       {% endfor %}
-      <button type="submit">Choose Doctor</button>
+      <button type="submit" class="btn-neon">
+        <span class="shine"></span> Choose Doctor
+      </button>
     </form>
   </div>
 
   {% if selected_doctor %}
-  <div class="dashboard-section">
-    <h3>Available Time Slots with Dr. {{ selected_doctor.email }}</h3>
+  <div class="glass-form-box" style="margin-top:28px;">
+    <h2>Time Slots — Dr. {{ selected_doctor.email }}</h2>
     <form method="POST">
       <input type="hidden" name="selected_doc_id" value="{{ selected_doctor.id }}">
-
-      
       <label for="selected_date"><strong>Select Date:</strong></label>
       <input type="date"
-             name="selected_date"
-             id="selected_date"
-             value="{{ selected_date }}"
-             onchange="this.form.submit()" required>
-      <br><br>
-
+        name="selected_date"
+        id="selected_date"
+        value="{{ selected_date }}"
+        onchange="this.form.submit()" required
+        style="margin-bottom:18px;">
+      <br>
       {% if selected_date %}
-     
-      <div class="timeslot-container">
+        <div class="timeslot-container">
         {% for time in selected_doctor.all_time %}
-          {% set is_booked = (selected_doctor.id, time) in booked_slot_times %}
-          <input type="radio"
-                 id="slot{{ time }}"
-                 name="time"
-                 value="{{ time }}"
-                 {% if is_booked %}disabled{% endif %}
-                 required
-                 class="timeslot-radio"
-                 hidden>
-          <label for="slot{{ time }}" class="timeslot-btn {% if is_booked %}disabled{% endif %}">
-            {{ "%02d:00"|format(time|int) }}{% if is_booked %} (Booked){% endif %}
-          </label>
-
-        {% endfor %}
-      </div>
-      <button type="submit">Book Slot</button>
+  {% set is_booked = (selected_doctor.id, time) in booked_slot_times %}
+  <input type="radio"
+    id="slot{{ time }}"
+    name="time"
+    value="{{ time }}"
+    {% if is_booked %}disabled{% endif %}
+    required
+    class="timeslot-radio">
+  <label for="slot{{ time }}" class="timeslot-btn{% if is_booked %} disabled{% endif %}">
+    {{ "%02d:00"|format(time|int) }}{% if is_booked %} (Booked){% endif %}
+  </label>
+{% endfor %}
+        </div>
+        <button type="submit" class="btn-neon">
+          <span class="shine"></span> Book Slot
+        </button>
       {% else %}
         <p><em>Please select a date to view available slots.</em></p>
       {% endif %}
     </form>
   </div>
   {% endif %}
-
 </div>
-
 {% endblock %}
-body.dark-mode .timeslot-btn {
-  color: #2c3e50;  /* ✅ Force same dark text */
-  background-color: #e6e6e6;  /* Optional: soften background if needed */
-}
