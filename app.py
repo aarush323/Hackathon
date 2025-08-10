@@ -318,7 +318,7 @@ def go_to_doctor_page():
 def logout():
     session.clear()
     flash("Logged out successfully.")
-    return redirect('/login')
+    return redirect('/')
 
 
 @app.route('/appointments')
@@ -335,6 +335,68 @@ def appointments():
 @app.route('/review')
 def review():
     return render_template('review.html')
+
+
+
+@app.route('/cancel_booking', methods=['POST'])
+@app.route('/cancel_booking', methods=['POST'])
+def cancel_booking():
+    if 'user_id' not in session or session.get('role') != 'doctor':
+        flash("You must be logged in as a doctor to cancel bookings.")
+        return redirect(url_for('login'))
+
+    doctor_id = session['user_id']
+    date = request.form.get('date')
+    time = request.form.get('time')
+
+    doctor = Doctor.query.get(doctor_id)
+    if not doctor:
+        flash("Doctor not found.")
+        return redirect(url_for('appointments'))
+
+    # Find the booking to cancel
+    target_booking = None
+    updated_bookings = []
+    for b in doctor.booked_time or []:
+        if b.get('date') == date and b.get('time') == time:
+            target_booking = b
+        else:
+            updated_bookings.append(b)
+
+    # Update bookings in DB
+    doctor.booked_time = updated_bookings
+    db.session.commit()
+
+    # Send cancellation email to patient's actual email if available
+    if target_booking and target_booking.get('patient_email'):
+        try:
+            # Look up the patient in the User table
+            user = User.query.filter_by(email=target_booking['patient_email']).first()
+            if user and user.actual_email:
+                recipient_email = user.actual_email
+            else:
+                # Fallback to the stored email if actual one not found
+                recipient_email = target_booking['patient_email']
+
+            msg = Message(
+                subject="Appointment Cancellation Notice",
+                sender=app.config['MAIL_DEFAULT_SENDER'],
+                recipients=[recipient_email],
+                body=(
+                    f"Dear {target_booking['patient_email']},\n\n"
+                    f"Your appointment on {date} at {time}:00 with Dr. {doctor.email} has been cancelled.\n\n"
+                    "Thanks and Regards\n"
+                    "ECOI Solutions"
+                )
+            )
+            mail.send(msg)
+            print(f"Cancellation email sent to {recipient_email}")
+        except Exception as e:
+            print("Email sending failed:", e)
+
+    flash(f"Booking on {date} at {time}:00 cancelled successfully.")
+    return redirect(url_for('appointments'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
